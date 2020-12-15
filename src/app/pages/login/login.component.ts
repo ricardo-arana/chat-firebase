@@ -12,8 +12,8 @@ export class LoginComponent implements OnInit {
   forma: FormGroup;
   constructor(private chatService: ChatService,private router: Router) {
     this.forma =  new FormGroup({
-      idRoom: new FormControl('', Validators.required),
-      nickname: new FormControl('', [Validators.required, Validators.minLength(4)])
+      idRoom: new FormControl('123', Validators.required),
+      nickname: new FormControl('Ricardo', [Validators.required, Validators.minLength(4)])
     })
    }
 

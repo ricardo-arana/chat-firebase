@@ -4,5 +4,21 @@
 </div>
 <hr>
 <div class="container">
-    
+    <div class="app-mensajes">
+        <div *ngFor="let mensaje of mensajes">
+            <span class="badge badge-primary"> {{ mensaje.nickname}}</span>
+            <p>
+                {{ mensaje.mensaje }}
+            </p>
+        </div>
+    </div>
+    <form [formGroup]="forma">
+        <input type="text" name="mensaje" 
+        formControlName="mensaje" 
+        class="form-control" 
+        placeholder="Enviar Mensaje"
+        (keyup.enter)="enviarMensaje()"
+        >
+    </form>
+   
 </div>

@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "chat-rarana": {
+      "hosting": {
+        "chat": [
+          "chat-rarana"
+        ]
+      }
+    }
+  }
+}
