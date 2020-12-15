@@ -25,7 +25,8 @@ export class RoomComponent implements OnInit {
     if(!this.nickname || !this.idRoom) {
       this.router.navigateByUrl('/login');
     }
-    this.fireStore.collection(this.idRoom).valueChanges().subscribe(
+    this.fireStore.collection(this.idRoom, ref => ref.orderBy('fecha','desc').limit(5) )
+    .valueChanges().subscribe(
       (documentos: Mensaje[]) => {
         this.mensajes = documentos;
       }

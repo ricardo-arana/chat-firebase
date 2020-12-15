@@ -5,8 +5,13 @@
 <hr>
 <div class="container">
     <div class="app-mensajes">
-        <div *ngFor="let mensaje of mensajes">
-            <span class="badge badge-primary"> {{ mensaje.nickname}}</span>
+        <div *ngFor="let mensaje of mensajes"  
+            [ngClass]="{ 'text-right': mensaje.nickname === nickname }"
+        >
+            <span class="badge"
+            [ngClass]="{ 'badge-primary': mensaje.nickname === nickname, 
+                            'badge-success': mensaje.nickname != nickname }"
+            > {{ mensaje.nickname}}</span>
             <p>
                 {{ mensaje.mensaje }}
             </p>
