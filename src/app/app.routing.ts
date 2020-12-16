@@ -4,12 +4,14 @@ import { AuthGuard } from './guards/auth.guard';
 
 import { LoginComponent } from './pages/login/login.component';
 import { RoomComponent } from './pages/room/room.component';
+import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 
-
+const redirectToLogin = ()=> redirectUnauthorizedTo(['/login']);
 
 const routes: Routes = [
     { path: 'login', component:  LoginComponent},
-    { path: 'room/:idRoom', component: RoomComponent, canActivate: [AuthGuard]},
+    { path: 'room/:idRoom', component: RoomComponent,
+     canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectToLogin}},
     { path: '**', pathMatch: 'full', redirectTo: 'login'}
 ]
 
