@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Mensaje } from 'src/app/models/chat.model';
 import { ChatService } from 'src/app/services/chat.service';
-
+import { mergeMap, map, take } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/auth';
 @Component({
   selector: 'app-room',
   templateUrl: './room.component.html',
@@ -20,22 +22,27 @@ export class RoomComponent implements OnInit {
 
   constructor(private chatService: ChatService,
               private router: Router,
-              private fireStore: AngularFirestore) {
-    this.nickname = this.chatService.nickname;
-    this.idRoom = this.chatService.idRoom;
-    if(!this.nickname || !this.idRoom) {
-      this.router.navigateByUrl('/login');
-    }
-    this.fireStore.collection(this.idRoom, ref => ref.orderBy('fecha','desc').limit(5) )
-    .valueChanges({ idField: 'id'}).subscribe(
+              private fireStore: AngularFirestore,
+              private activadRoute: ActivatedRoute,
+              private auth: AngularFireAuth) {
+    
+    const user$ = this.auth.user.pipe( map( user => user.displayName ), take(1));
+
+    user$.subscribe( nickname => this.nickname = nickname);
+
+    const parms$ = this.activadRoute.params.pipe(
+      map<Params, string>( parms => parms['idRoom'].toString()));
+    
+
+    parms$.pipe(
+      mergeMap( idRoom => this.obtenerMensajes(idRoom))
+    ).subscribe(
       (documentos: any) => {
         this.mensajes = documentos.reverse();
-        console.log(this.mensajes)
-
-        // this.mensajes = documentos.reverse();
         this.irAlFinal();
       }
     );
+    
 
     this.forma = new FormGroup({
       mensaje: new FormControl('', Validators.required)
@@ -83,5 +90,21 @@ export class RoomComponent implements OnInit {
   trackById(element: Mensaje, index: number) {
     return element.id;
   }
+
+  obtenerMensajes(idRoom: string): Observable<Mensaje[]> {
+    this.idRoom = idRoom;
+    return this.fireStore.collection(idRoom, ref => ref.orderBy('fecha','desc').limit(5) )
+    .valueChanges({ idField: 'id'})
+    .pipe( map( mensajes => mensajes as Mensaje[]) );
+    
+    
+  }
+
+  signpout() {
+    this.auth.signOut()
+    .then( () => this.router.navigateByUrl('/login'));
+  }
+
+
 
 }

@@ -24,9 +24,9 @@ export class LoginComponent implements OnInit {
 
   continuar(value: firebase.auth.UserCredential) {
     console.log(this.chatService.idRoom);
-    this.chatService.idRoom = this.forma.get('idRoom').value;
-    this.chatService.nickname = value.user.displayName;
-    this.router.navigateByUrl('/room');
+    // this.chatService.idRoom = this.forma.get('idRoom').value;
+    // this.chatService.nickname = value.user.displayName;
+    this.router.navigate(['/room', this.forma.get('idRoom').value])
       
       
   }
