@@ -4,8 +4,8 @@
 </div>
 <hr>
 <div class="container">
-    <div class="app-mensajes">
-        <div *ngFor="let mensaje of mensajes"  
+    <div class="app-mensajes" id="app-mensaje">
+        <div *ngFor="let mensaje of mensajes; trackBy: trackById"  
             [ngClass]="{ 'text-right': mensaje.nickname === nickname }"
         >
             <span class="badge"

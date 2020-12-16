@@ -16,6 +16,7 @@ export class RoomComponent implements OnInit {
   idRoom: string;
   mensajes: Mensaje[];
   forma: FormGroup;
+  elemento: any;
 
   constructor(private chatService: ChatService,
               private router: Router,
@@ -26,9 +27,13 @@ export class RoomComponent implements OnInit {
       this.router.navigateByUrl('/login');
     }
     this.fireStore.collection(this.idRoom, ref => ref.orderBy('fecha','desc').limit(5) )
-    .valueChanges().subscribe(
-      (documentos: Mensaje[]) => {
-        this.mensajes = documentos;
+    .valueChanges({ idField: 'id'}).subscribe(
+      (documentos: any) => {
+        this.mensajes = documentos.reverse();
+        console.log(this.mensajes)
+
+        // this.mensajes = documentos.reverse();
+        this.irAlFinal();
       }
     );
 
@@ -38,6 +43,8 @@ export class RoomComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.elemento = document.getElementById('app-mensaje');
+    console.log(this.elemento);
   }
 
   enviarMensaje() {
@@ -65,6 +72,16 @@ export class RoomComponent implements OnInit {
 
   set setMensajeForm(value: string) {
     this.forma.get('mensaje').setValue(value);
+  }
+
+  irAlFinal() {
+    setTimeout( () => {
+      this.elemento.scrollTop = this.elemento.scrollHeight;
+    },20);
+  }
+
+  trackById(element: Mensaje, index: number) {
+    return element.id;
   }
 
 }
