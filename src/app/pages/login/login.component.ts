@@ -22,16 +22,26 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  continuar() {
+  continuar(value: firebase.auth.UserCredential) {
+    console.log(this.chatService.idRoom);
+    this.chatService.idRoom = this.forma.get('idRoom').value;
+    this.chatService.nickname = value.user.displayName;
+    this.router.navigateByUrl('/room');
+      
+      
+  }
+
+  logearConGoogle() {
     if(this.forma.invalid) { return; }
       this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then( value => {
-        this.chatService.idRoom = this.forma.get('idRoom').value;
-        this.chatService.nickname = value.user.displayName;
-        this.router.navigateByUrl('/room');
-      })
-      
-      
+      //.then( this.continuar);
+      .then( value => this.continuar(value))
+  }
+
+  logearConGithub() {
+    if(this.forma.invalid) { return; }
+    this.auth.signInWithPopup( new firebase.auth.GithubAuthProvider())
+    .then( value => this.continuar(value))
   }
 
 }
